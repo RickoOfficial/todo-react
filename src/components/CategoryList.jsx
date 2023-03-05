@@ -7,6 +7,9 @@ const CategoryList = ({
 	setMousePos,
 	setSelectedCategory,
 	selectedCategory,
+	removeCategory,
+	updateCategory,
+	setSideBarOpen,
 }) => {
 	return (
 		<div className="overflow-y-auto h-full max-h-full hide-scroll">
@@ -18,7 +21,10 @@ const CategoryList = ({
 					setMousePos={setMousePos}
 					setSelectedCategory={setSelectedCategory}
 					selectedCategory={selectedCategory}
+					removeCategory={removeCategory}
+					updateCategory={updateCategory}
 					key={category.id}
+					setSideBarOpen={setSideBarOpen}
 				/>
 			))}
 		</div>

@@ -1,30 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ContextMenuItem from './ContextMenuItem'
-import AutoResizeTextarea from './AutoResizeTextarea'
 import IconButton from './IconButton'
+import AutoResizeTextarea from './AutoResizeTextarea'
 
-const CategoryItem = ({
-	category,
+const TodoItem = ({
+	todo,
 	setIsShowCategoryContextMenu,
 	setCategoryContextMenuItems,
 	setMousePos,
-	setSelectedCategory,
-	selectedCategory,
-	removeCategory,
-	updateCategory,
-	setSideBarOpen,
+	removeTodo,
+	updateTodo,
 }) => {
-	const [possibleCategoryName, setPossibleCategoryName] = useState(undefined)
+	const [possibleTodoText, setPossibleTodoText] = useState(undefined)
 
 	let textareaRef = React.createRef()
 
-	const handleContextMenu = (event) => {
+	const handleOnContextMenu = (event) => {
 		event.preventDefault()
 
 		setCategoryContextMenuItems([
 			<ContextMenuItem
 				handleOnClick={() => {
-					setPossibleCategoryName(category.name)
+					setPossibleTodoText(todo.text)
 				}}
 				key={0}
 			>
@@ -32,7 +29,7 @@ const CategoryItem = ({
 			</ContextMenuItem>,
 			<ContextMenuItem
 				handleOnClick={() => {
-					removeCategory(category.id)
+					removeTodo(todo.id)
 				}}
 				key={1}
 			>
@@ -47,7 +44,7 @@ const CategoryItem = ({
 	}
 
 	// const initFocusOnTextArea = () => {
-	// 	if(possibleCategoryName === '') {
+	// 	if (possibleTodoText === '') {
 	// 		textareaRef.current.querySelector('textarea').focus()
 	// 	}
 	// }
@@ -58,21 +55,21 @@ const CategoryItem = ({
 
 	return (
 		<>
-			{possibleCategoryName !== undefined ? (
+			{possibleTodoText !== undefined ? (
 				<div
 					ref={textareaRef}
 					className="relative px-4 py-2 mb-2 rounded-xl border border-grey-300 focus:border-green-100 pr-20"
 				>
 					<AutoResizeTextarea
-						value={possibleCategoryName}
-						onChange={(event) => setPossibleCategoryName(event.target.value)}
-						placeholder="Введите название"
+						value={possibleTodoText}
+						onChange={(event) => setPossibleTodoText(event.target.value)}
+						placeholder="Введите текст"
 						className="text-p2"
 					/>
 					<IconButton
 						handleOnClick={() => {
-							updateCategory(category.id, possibleCategoryName)
-							setPossibleCategoryName(undefined)
+							updateTodo(todo.id, possibleTodoText)
+							setPossibleTodoText(undefined)
 						}}
 						className="absolute top-6 -translate-y-1/2 w-6 h-6 right-10 flex justify-center items-center outline-none select-none"
 					>
@@ -80,7 +77,7 @@ const CategoryItem = ({
 					</IconButton>
 					<IconButton
 						handleOnClick={() => {
-							setPossibleCategoryName(undefined)
+							setPossibleTodoText(undefined)
 						}}
 						title="Отмена"
 						className="absolute top-6 -translate-y-1/2 w-6 h-6 right-2 flex justify-center items-center outline-none select-none"
@@ -90,24 +87,14 @@ const CategoryItem = ({
 				</div>
 			) : (
 				<div
-					onContextMenu={handleContextMenu}
-					onClick={() => {
-						setSelectedCategory(category)
-						setSideBarOpen(false)
-					}}
-					className={
-						'text-p2 rounded-xl p-4 transition-colors cursor-pointer mb-4 select-none' +
-						' ' +
-						(selectedCategory && selectedCategory.id === category.id
-							? 'bg-green-100 text-white hover:bg-green-200'
-							: 'bg-grey-100 hover:bg-grey-200')
-					}
+					onContextMenu={handleOnContextMenu}
+					className="text-p2 rounded-xl p-4 transition-colors cursor-pointer mb-4 select-none bg-grey-100 hover:bg-grey-200"
 				>
-					{category.name}
+					{todo.text}
 				</div>
 			)}
 		</>
 	)
 }
 
-export default CategoryItem
+export default TodoItem
