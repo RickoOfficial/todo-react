@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import ContextMenuItem from './ContextMenuItem'
 import IconButton from './IconButton'
 import AutoResizeTextarea from './AutoResizeTextarea'
+import { useDispatch } from 'react-redux'
+import { setIsShow } from '../store/contextMenu'
+import { removeTodo, updateTodo } from '../store/categoriesSlice'
 
-const TodoItem = ({
-	todo,
-	setIsShowCategoryContextMenu,
-	setCategoryContextMenuItems,
-	setMousePos,
-	removeTodo,
-	updateTodo,
-}) => {
+const TodoItem = ({ todo, setCategoryContextMenuItems, setMousePos }) => {
+	const dispatch = useDispatch()
+
 	const [possibleTodoText, setPossibleTodoText] = useState(undefined)
 
 	let textareaRef = React.createRef()
@@ -21,7 +19,7 @@ const TodoItem = ({
 		setCategoryContextMenuItems([
 			<ContextMenuItem
 				handleOnClick={() => {
-					setPossibleTodoText(todo.text)
+					setPossibleTodoText(todo.task_name)
 				}}
 				key={0}
 			>
@@ -29,7 +27,7 @@ const TodoItem = ({
 			</ContextMenuItem>,
 			<ContextMenuItem
 				handleOnClick={() => {
-					removeTodo(todo.id)
+					dispatch(removeTodo(todo.id))
 				}}
 				key={1}
 			>
@@ -40,18 +38,9 @@ const TodoItem = ({
 			x: event.pageX,
 			y: event.pageY,
 		})
-		setIsShowCategoryContextMenu(true)
+
+		dispatch(setIsShow(true))
 	}
-
-	// const initFocusOnTextArea = () => {
-	// 	if (possibleTodoText === '') {
-	// 		textareaRef.current.querySelector('textarea').focus()
-	// 	}
-	// }
-
-	// useEffect(() => {
-	// 	initFocusOnTextArea()
-	// })
 
 	return (
 		<>
@@ -68,7 +57,7 @@ const TodoItem = ({
 					/>
 					<IconButton
 						handleOnClick={() => {
-							updateTodo(todo.id, possibleTodoText)
+							dispatch(updateTodo({ todoId: todo.id, possibleTodoText }))
 							setPossibleTodoText(undefined)
 						}}
 						className="absolute top-6 -translate-y-1/2 w-6 h-6 right-10 flex justify-center items-center outline-none select-none"
@@ -90,7 +79,7 @@ const TodoItem = ({
 					onContextMenu={handleOnContextMenu}
 					className="text-p2 rounded-xl p-4 transition-colors cursor-pointer mb-4 select-none bg-grey-100 hover:bg-grey-200"
 				>
-					{todo.text}
+					{todo.task_name}
 				</div>
 			)}
 		</>

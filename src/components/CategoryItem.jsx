@@ -1,30 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import ContextMenuItem from './ContextMenuItem'
 import AutoResizeTextarea from './AutoResizeTextarea'
 import IconButton from './IconButton'
+import { useDispatch, useSelector } from 'react-redux'
+import { setIsShow } from '../store/contextMenu'
+import { fetchTodos, removeCategory, updateCategory } from '../store/categoriesSlice'
 
-const CategoryItem = ({
-	category,
-	setIsShowCategoryContextMenu,
-	setCategoryContextMenuItems,
-	setMousePos,
-	setSelectedCategory,
-	selectedCategory,
-	removeCategory,
-	updateCategory,
-	setSideBarOpen,
-}) => {
+const CategoryItem = ({ category, setCategoryContextMenuItems, setMousePos, setSideBarOpen }) => {
+	const selectedCategory = useSelector((state) => state.categories.selected)
+	const dispatch = useDispatch()
+
 	const [possibleCategoryName, setPossibleCategoryName] = useState(undefined)
 
 	let textareaRef = React.createRef()
 
-	const handleContextMenu = (event) => {
+	const handleOnContextMenu = (event) => {
 		event.preventDefault()
 
 		setCategoryContextMenuItems([
 			<ContextMenuItem
 				handleOnClick={() => {
-					setPossibleCategoryName(category.name)
+					setPossibleCategoryName(category.category_name)
 				}}
 				key={0}
 			>
@@ -32,7 +28,7 @@ const CategoryItem = ({
 			</ContextMenuItem>,
 			<ContextMenuItem
 				handleOnClick={() => {
-					removeCategory(category.id)
+					dispatch(removeCategory(category.id))
 				}}
 				key={1}
 			>
@@ -43,18 +39,9 @@ const CategoryItem = ({
 			x: event.pageX,
 			y: event.pageY,
 		})
-		setIsShowCategoryContextMenu(true)
+
+		dispatch(setIsShow(true))
 	}
-
-	// const initFocusOnTextArea = () => {
-	// 	if(possibleCategoryName === '') {
-	// 		textareaRef.current.querySelector('textarea').focus()
-	// 	}
-	// }
-
-	// useEffect(() => {
-	// 	initFocusOnTextArea()
-	// })
 
 	return (
 		<>
@@ -71,7 +58,7 @@ const CategoryItem = ({
 					/>
 					<IconButton
 						handleOnClick={() => {
-							updateCategory(category.id, possibleCategoryName)
+							dispatch(updateCategory({ categoryId: category.id, possibleCategoryName }))
 							setPossibleCategoryName(undefined)
 						}}
 						className="absolute top-6 -translate-y-1/2 w-6 h-6 right-10 flex justify-center items-center outline-none select-none"
@@ -90,9 +77,9 @@ const CategoryItem = ({
 				</div>
 			) : (
 				<div
-					onContextMenu={handleContextMenu}
+					onContextMenu={handleOnContextMenu}
 					onClick={() => {
-						setSelectedCategory(category)
+						dispatch(fetchTodos(category))
 						setSideBarOpen(false)
 					}}
 					className={
@@ -103,7 +90,7 @@ const CategoryItem = ({
 							: 'bg-grey-100 hover:bg-grey-200')
 					}
 				>
-					{category.name}
+					{category.category_name}
 				</div>
 			)}
 		</>
