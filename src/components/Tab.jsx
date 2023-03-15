@@ -5,7 +5,7 @@ const Tab = ({ children, onChange = () => {} }) => {
 
 	return (
 		<div className="">
-			<div className={`mb-5 rounded-xl bg-grey-200 p-1 grid grid-cols-${children.length} text-center`}>
+			<div className={`mb-5 rounded-xl bg-grey-200 p-1 flex text-center`}>
 				{children.map((item, index) => {
 					return (
 						<div
@@ -13,7 +13,7 @@ const Tab = ({ children, onChange = () => {} }) => {
 								setSelectedItem(index)
 								onChange(index, children)
 							}}
-							className={`text-h5 font-medium py-4 rounded-lg select-none cursor-pointer ${
+							className={`w-full text-h5 font-medium py-4 rounded-lg select-none cursor-pointer ${
 								selectedItem === index ? 'bg-white' : ''
 							}`}
 							key={index}
